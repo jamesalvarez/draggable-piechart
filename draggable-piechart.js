@@ -121,13 +121,13 @@
                 // use the proportions to reconstruct angles
                 return proportions.map(function(v, i) {
                     var arcSize = TAU * v.proportion / total;
-                    var angle = normaliseAngle(currentAngle + arcSize);
-                    currentAngle = angle;
-                    return {
-                        angle: angle,
+                    var data = {
+                        angle: currentAngle,
                         format: v.format,
                         collapsed: arcSize <= 0
                     };
+                    currentAngle = normaliseAngle(currentAngle + arcSize);
+                    return data;
                 });
 
             }
