@@ -1,2 +1,70 @@
 # draggable-piechart
 A javascript class for interactive draggable pie charts on HTML5 canvas
+
+* Works with both touch / mouse devices
+* Customise the drawing of the chart
+* Requires jQuery
+
+If you are looking for a customisable class to render interactive pie charts, then possibly your search is at an end.  
+
+## Getting started
+
+Creating the default piechart is easy, just create a new object passing in a canvas:
+
+```
+var newPie = new DraggablePiechart({canvas: document.getElementById('piechart')});
+```
+
+## Passing in custom data
+
+Data can be passed in as proportions:
+
+```
+var proportions = [
+	{ proportion: 50, format: { color: "#2665da", label: 'Cats'}},
+	{ proportion: 50, format: { color: "#6dd020", label: 'Dogs'}} ];
+	
+var newPie = new DraggablePiechart({
+	canvas: document.getElementById('piechart'), 
+	proportions: proportions
+});
+```
+
+Data can be passed in raw, which gives the angle for each inter-segment, and it's state whether it's collapsed:
+
+```
+var data = [
+	{ angle: 0, format: { color: "#2665da", label: 'Cats'}, collapsed: false },
+	{ angle: Math.PI, format: { color: "#6dd020", label: 'Dogs'}, collapsed: false }];
+	
+var newPie = new DraggablePiechart({
+	canvas: document.getElementById('piechart'),
+	data: data
+});
+```
+
+## Collapsing behaviour
+
+Setting the collapsing option to true will cause segments to be collapsed when dragged to zero size.  You will need to provide a way of uncollapsing segments if this is the case, with a call to setCollapsed().
+
+```
+var newPie = new DraggablePiechart({
+	canvas: document.getElementById('piechart'), 
+	collapsing: true,  // elements will collapse when dragged to zero
+	minAngle: 0.1 // minimum angle in rads for a segment
+});
+```
+
+Setting the collapsing option to false will prevent this, and just shift around the segments in the way:
+
+```
+var newPie = new DraggablePiechart({
+	canvas: document.getElementById('piechart'), 
+	collapsing: false,  // elements will not collapse 
+	minAngle: 0.1 // minimum angle in rads for a segment
+});
+```
+
+## Custom formatting
+
+You can pass in 

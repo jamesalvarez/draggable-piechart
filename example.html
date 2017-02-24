@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Draggable canvas pie chart</title>
+    <link href="example.css" rel="stylesheet" type="text/css">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous"></script>
+
+    <script src="draggable-piechart.js"></script>
+    <script src="example.js"></script>
+    <!--[if IE]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div id="piechart-controls">
+    <canvas id="piechart" width="400" height="400">Your browser is too old!</canvas>
+    <br>
+    <table id="proportions-table"></table>
+    <br>
+    <p id="piechart-instructions">
+        Drag the circles or click the buttons to adjust the pie chart. If a segment has gone,
+        you can get it back by clicking it's '+' button.
+    </p>
+
+</div>
+
+</body>
+</html>
