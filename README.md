@@ -7,6 +7,10 @@ A javascript class for interactive draggable pie charts on HTML5 canvas
 
 If you are looking for a customisable class to render interactive pie charts, then possibly your search is at an end.  
 
+## Online examples:
+
+See the blog post on my website: [http://jamesalvarez.co.uk/uncategorized/draggable-piechart-js-class/](http://jamesalvarez.co.uk/uncategorized/draggable-piechart-js-class/)
+
 ## Getting started
 
 Creating the default piechart is easy, just create a new object passing in a canvas:
@@ -67,4 +71,25 @@ var newPie = new DraggablePiechart({
 
 ## Custom formatting
 
-You can pass in 
+You can pass in custom functions to draw the pie's segments and drag indicators - for an example of this, see example.js.  
+
+## Getting the result
+
+You can provide a callback, which is fired everytime the pie is adjusted, and there are functions to get the percentages indicated by the pie, e.g.:
+
+```
+var newPie = new DraggablePiechart({
+	canvas: document.getElementById('piechart'), 
+	onchange: onPieChartChange
+});
+
+function onPieChartChange(piechart) {
+	// get the percentage for the first slice
+	var firstPercentage = piechart.getSliceSizePercentage(0);
+	
+	// get all percentages
+	var percentages = piechart.getAllSliceSizePercentages();
+}
+```
+
+
