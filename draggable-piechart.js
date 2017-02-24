@@ -8,7 +8,7 @@
 
         var piechart = this;
 
-        setup = $.extend(true, this.defaults, setup);
+        setup = $.extend({}, this.defaults, setup);
 
 
         this.canvas = setup.canvas;
