@@ -126,7 +126,7 @@
                     return {
                         angle: angle,
                         format: v.format,
-                        collapsed: angle <= 0
+                        collapsed: arcSize <= 0
                     };
                 });
 
