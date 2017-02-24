@@ -8,7 +8,7 @@
 
         var piechart = this;
 
-        setup = $.extend({}, this.defaults, setup);
+        setup = $.extend(true, {}, this.defaults, setup);
 
 
         this.canvas = setup.canvas;
@@ -20,10 +20,10 @@
             return;
         }
 
-        if (setup.data) {
-            this.data = setup.data;
-        } else if (setup.proportions) {
+        if (setup.proportions) {
             this.data = generateDataFromProportions(setup.proportions);
+        } else if (setup.data) {
+            this.data = setup.data;
         }
 
         this.draggedPie = null;
