@@ -1,8 +1,16 @@
 
-(function($){
+(function(){
 
+    //IE9+ http://youmightnotneedjquery.com/
+    function ready(fn) {
+        if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading"){
+            fn();
+        } else {
+            document.addEventListener('DOMContentLoaded', fn);
+        }
+    }
 
-    $(window).ready(setupPieChart);
+    ready(setupPieChart);
 
 
     function setupPieChart() {
@@ -65,25 +73,35 @@
 
         function onPieChartChange(piechart) {
 
-            var table = $('#proportions-table');
+            var table = document.getElementById('proportions-table');
             var percentages = piechart.getAllSliceSizePercentages();
 
-            var labelsRow = $('<tr/>').append(proportions.map(function(v,i) { return '<th>' + v.format.label + '</th>' }));
-            var proportionsRow = $('<tr/>').append(proportions.map(function(v,i) {
+            var labelsRow = '<tr>';
+            var propsRow = '<tr>';
+            for(var i = 0; i < proportions.length; i += 1) {
+                labelsRow += '<th>' + proportions[i].format.label + '</th>';
 
-                var plus = $('<div/>').attr('id', 'plus-' + dimensions[i]).addClass('adjust-button').data({i: i, d: -1}).html('&#43;').mousedown(adjustClick);
-                var minus = $('<div/>').attr('id', 'plus-' + dimensions[i]).addClass('adjust-button').data({i: i, d: 1}).html('&#8722;').mousedown(adjustClick);
+                var v = '<var>' + percentages[i].toFixed(0) + '%</var>';
+                var plus = '<div id="plu-' + dimensions[i] + '" class="adjust-button" data-i="' + i + '" data-d="-1">&#43;</div>';
+                var minus = '<div id="min-' + dimensions[i] + '" class="adjust-button" data-i="' + i + '" data-d="1">&#8722;</div>';
+                propsRow += '<td>' + v + plus + minus + '</td>';
+            }
+            labelsRow += '</tr>';
+            propsRow += '</tr>';
 
-                return $('<td/>').append('<var>' + percentages[i].toFixed(0) + '%</var>').append(plus).append(minus);
+            table.innerHTML = labelsRow + propsRow;
 
-            }));
+            var adjust = document.getElementsByClassName("adjust-button");
 
-            table.html('').append(proportionsRow).append(labelsRow);
-            function adjustClick() {
-                var i = $(this).data('i');
-                var d = $(this).data('d');
+            function adjustClick(e) {
+                var i = this.getAttribute('data-i');
+                var d = this.getAttribute('data-d');
 
                 piechart.moveAngle(i, (d * 0.1));
+            }
+
+            for (i = 0; i < adjust.length; i++) {
+                adjust[i].addEventListener('click', adjustClick);
             }
 
         }
@@ -135,7 +153,7 @@
         }
     }
 
-})(jQuery);
+})();
 
 
 

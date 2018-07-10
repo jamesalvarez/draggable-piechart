@@ -3,7 +3,6 @@ A javascript class for interactive draggable pie charts on HTML5 canvas
 
 * Works with both touch / mouse devices
 * Customise the drawing of the chart
-* Requires jQuery
 
 If you are looking for a customisable class to render interactive pie charts, then possibly your search is at an end.  
 

@@ -2,31 +2,17 @@
  * Created by james on 23/02/2017.
  */
 
-(function(){
-
-    var extend = function(out) {
-        out = out || {};
-
-        for (var i = 1; i < arguments.length; i++) {
-            if (!arguments[i])
-                continue;
-
-            for (var key in arguments[i]) {
-                if (arguments[i].hasOwnProperty(key))
-                    out[key] = arguments[i][key];
-            }
-        }
-
-        return out;
-    };
+(function($){
 
     var DraggablePiechart = function(setup) {
 
         var piechart = this;
 
-        setup = extend({}, this.defaults, setup);
+        setup = $.extend(true, {}, this.defaults, setup);
+
 
         this.canvas = setup.canvas;
+        this.$canvas = $(setup.canvas);
         this.context = setup.canvas.getContext("2d");
 
         if (!this.context) {
@@ -52,18 +38,19 @@
 
         // Bind appropriate events
         if (is_touch_device()) {
-            this.canvas.addEventListener('touchstart', touchStart);
-            this.canvas.addEventListener('touchmove',touchMove);
-            document.addEventListener('touchend', touchEnd);
+            this.$canvas.bind('touchstart', touchStart);
+            this.$canvas.bind('touchmove',touchMove);
+            $(document).bind('touchend', touchEnd);
         } else {
-            this.canvas.addEventListener('mousedown',touchStart);
-            this.canvas.addEventListener('mousemove',touchMove);
-            document.addEventListener('mouseup', touchEnd);
+            this.$canvas.mousedown(touchStart);
+            this.$canvas.mousemove(touchMove);
+            $(document).mouseup(touchEnd);
         }
 
         this.draw();
 
         function touchStart(event) {
+
 
             piechart.draggedPie = piechart.getTarget(getMouseLocation(event));
             if (piechart.draggedPie) {
@@ -73,10 +60,8 @@
 
         function touchEnd() {
 
-            if (piechart.draggedPie) {
-                piechart.draggedPie = null;
-                piechart.draw();
-            }
+            piechart.draggedPie = null;
+            piechart.draw();
         }
 
         function touchMove(event) {
@@ -494,7 +479,7 @@
         for (var i = 1; i < piechart.data.length; i += 1) {
 
             // Index to test each slice in order
-            var index = mod(parseInt(draggedPie.index) + (i * rotationDirection), piechart.data.length);
+            var index = mod(draggedPie.index + (i * rotationDirection), piechart.data.length);
 
             // Get angle from target start to this angle
             var startingAngleToNonDragged = smallestSignedAngleBetween(draggedPie.startingAngles[index], startingAngle);
@@ -646,5 +631,5 @@
         }
     }
     
-})();
+})(jQuery);
 
