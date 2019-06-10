@@ -116,8 +116,8 @@
                 }
             } else {
                 return {
-                    x: evt.originalEvent.targetTouches[0].clientX - rect.left,
-                    y: evt.originalEvent.targetTouches[0].clientY - rect.top
+                    x: evt.targetTouches[0].clientX - rect.left,
+                    y: evt.targetTouches[0].clientY - rect.top
                 }
             }
         }
