@@ -8,7 +8,7 @@ If you are looking for a customisable class to render interactive pie charts, th
 
 ## Online examples:
 
-See the blog post on my website: [http://jamesalvarez.co.uk/uncategorized/draggable-piechart-js-class/](http://jamesalvarez.co.uk/uncategorized/draggable-piechart-js-class/)
+See the blog post on my website: [http://www.jamesalvarez.co.uk/blog/draggable-piechart-js-class/](http://www.jamesalvarez.co.uk/blog/draggable-piechart-js-class/)
 
 ## Getting started
 
