@@ -2,9 +2,9 @@
  * Created by james on 23/02/2017.
  */
 
-(function(){
+(function () {
 
-    var extend = function(out) {
+    var extend = function (out) {
         out = out || {};
 
         for (var i = 1; i < arguments.length; i++) {
@@ -20,7 +20,7 @@
         return out;
     };
 
-    var DraggablePiechart = function(setup) {
+    var DraggablePiechart = function (setup) {
 
         var piechart = this;
 
@@ -51,15 +51,23 @@
 
 
         // Bind appropriate events
-        if (is_touch_device()) {
-            this.canvas.addEventListener('touchstart', touchStart);
-            this.canvas.addEventListener('touchmove',touchMove);
-            document.addEventListener('touchend', touchEnd);
-        } else {
-            this.canvas.addEventListener('mousedown',touchStart);
-            this.canvas.addEventListener('mousemove',touchMove);
-            document.addEventListener('mouseup', touchEnd);
-        }
+
+        this.canvas.addEventListener('touchstart', function (e) {
+            touchStart(e);
+            e.preventDefault();
+        });
+        this.canvas.addEventListener('touchmove', function (e) {
+            touchMove(e);
+            e.preventDefault();
+        });
+        document.addEventListener('touchend', function (e) {
+            touchEnd(e);
+        });
+
+        this.canvas.addEventListener('mousedown', touchStart);
+        this.canvas.addEventListener('mousemove', touchMove);
+        document.addEventListener('mouseup', touchEnd);
+
 
         this.draw();
 
@@ -100,12 +108,12 @@
             var dy = dragLocation.y - draggedPie.centerY;
 
             // Get angle of grabbed target from centre of pie
-            var newAngle = Math.atan2(dy,dx) - draggedPie.angleOffset;
+            var newAngle = Math.atan2(dy, dx) - draggedPie.angleOffset;
 
             piechart.shiftSelectedAngle(newAngle);
             piechart.draw();
         }
-        
+
         function getMouseLocation(evt) {
             var rect = piechart.canvas.getBoundingClientRect();
 
@@ -127,35 +135,37 @@
          */
         function generateDataFromProportions(proportions) {
 
-                // sum of proportions
-                var total = proportions.reduce(function(a, v) { return a + v.proportion; }, 0);
+            // sum of proportions
+            var total = proportions.reduce(function (a, v) {
+                return a + v.proportion;
+            }, 0);
 
-                // begin at 0
-                var currentAngle = 0;
+            // begin at 0
+            var currentAngle = 0;
 
-                // use the proportions to reconstruct angles
-                return proportions.map(function(v, i) {
-                    var arcSize = TAU * v.proportion / total;
-                    var data = {
-                        angle: currentAngle,
-                        format: v.format,
-                        collapsed: arcSize <= 0
-                    };
-                    currentAngle = normaliseAngle(currentAngle + arcSize);
-                    return data;
-                });
+            // use the proportions to reconstruct angles
+            return proportions.map(function (v, i) {
+                var arcSize = TAU * v.proportion / total;
+                var data = {
+                    angle: currentAngle,
+                    format: v.format,
+                    collapsed: arcSize <= 0
+                };
+                currentAngle = normaliseAngle(currentAngle + arcSize);
+                return data;
+            });
 
-            }
+        }
 
     };
 
     /*
      * Move angle specified by index: i, by amount: angle in rads
      */
-    DraggablePiechart.prototype.moveAngle = function(i, amount) {
+    DraggablePiechart.prototype.moveAngle = function (i, amount) {
 
         if (this.data[i].collapsed && amount < 0) {
-            this.setCollapsed(i,false);
+            this.setCollapsed(i, false);
             return;
         }
 
@@ -165,8 +175,12 @@
             angleOffset: 0,
             centerX: geometry.centerX,
             centerY: geometry.centerY,
-            startingAngles: this.data.map(function(v){ return v.angle; }),
-            collapsed: this.data.map(function(v){ return v.collapsed; }),
+            startingAngles: this.data.map(function (v) {
+                return v.angle;
+            }),
+            collapsed: this.data.map(function (v) {
+                return v.collapsed;
+            }),
             angleDragDistance: 0
         };
 
@@ -178,10 +192,10 @@
     /*
      * Gets percentage of indexed slice
      */
-    DraggablePiechart.prototype.getSliceSizePercentage = function(index) {
+    DraggablePiechart.prototype.getSliceSizePercentage = function (index) {
         var visibleSegments = this.getVisibleSegments();
 
-        for(var i = 0; i < visibleSegments.length; i += 1) {
+        for (var i = 0; i < visibleSegments.length; i += 1) {
             if (visibleSegments[i].index == index) {
                 return 100 * visibleSegments[i].arcSize / TAU;
             }
@@ -192,15 +206,15 @@
     /*
      * Gets all percentages for each slice
      */
-    DraggablePiechart.prototype.getAllSliceSizePercentages = function() {
+    DraggablePiechart.prototype.getAllSliceSizePercentages = function () {
         var visibleSegments = this.getVisibleSegments();
         var percentages = [];
-        for(var i = 0; i < this.data.length; i += 1) {
+        for (var i = 0; i < this.data.length; i += 1) {
 
             if (this.data[i].collapsed) {
                 percentages[i] = 0;
             } else {
-                for(var j = 0; j < visibleSegments.length; j += 1) {
+                for (var j = 0; j < visibleSegments.length; j += 1) {
                     if (visibleSegments[j].index == i) {
                         percentages[i] = 100 * visibleSegments[j].arcSize / TAU;
                     }
@@ -215,7 +229,7 @@
     /*
      * Gets the geometry of the pie chart in the canvas
      */
-    DraggablePiechart.prototype.getGeometry = function() {
+    DraggablePiechart.prototype.getGeometry = function () {
         var centerX = Math.floor(this.canvas.width / 2);
         var centerY = Math.floor(this.canvas.height / 2);
         return {
@@ -228,7 +242,7 @@
     /*
      * Returns a segment to drag if given a close enough location
      */
-    DraggablePiechart.prototype.getTarget = function(targetLocation) {
+    DraggablePiechart.prototype.getTarget = function (targetLocation) {
 
         var geometry = this.getGeometry();
         var startingAngles = [];
@@ -245,12 +259,14 @@
             startingAngles.push(this.data[i].angle);
             collapsed.push(this.data[i].collapsed);
 
-            if (this.data[i].collapsed) { continue; }
+            if (this.data[i].collapsed) {
+                continue;
+            }
 
 
             var dx = targetLocation.x - geometry.centerX;
             var dy = targetLocation.y - geometry.centerY;
-            var trueGrabbedAngle = Math.atan2(dy,dx);
+            var trueGrabbedAngle = Math.atan2(dy, dx);
 
             var distance = Math.abs(smallestSignedAngleBetween(trueGrabbedAngle, this.data[i].angle));
 
@@ -280,7 +296,7 @@
     /*
      * Sets segments collapsed or uncollapsed
      */
-    DraggablePiechart.prototype.setCollapsed = function(index, collapsed) {
+    DraggablePiechart.prototype.setCollapsed = function (index, collapsed) {
 
         // Flag to set position of previously collapsed to new location
         var setNewPos = this.data[index].collapsed && !collapsed;
@@ -297,15 +313,15 @@
 
                 //Set new position
                 if (setNewPos) {
-                    var nextSegment = visibleSegments[ mod(i + 1, visibleSegments.length) ];
+                    var nextSegment = visibleSegments[mod(i + 1, visibleSegments.length)];
                     this.data[index].angle = nextSegment.angle - this.minAngle;
                 }
 
                 for (var j = 0; j < (visibleSegments.length - 1); j += 1) {
-                    var currentSegment = visibleSegments[ mod(1 + i - j, visibleSegments.length) ];
-                    var nextAlongSegment = visibleSegments[ mod(i - j, visibleSegments.length) ];
+                    var currentSegment = visibleSegments[mod(1 + i - j, visibleSegments.length)];
+                    var nextAlongSegment = visibleSegments[mod(i - j, visibleSegments.length)];
 
-                    var angleBetween = Math.abs(smallestSignedAngleBetween(this.data[currentSegment.index].angle, this.data[nextAlongSegment.index].angle) );
+                    var angleBetween = Math.abs(smallestSignedAngleBetween(this.data[currentSegment.index].angle, this.data[nextAlongSegment.index].angle));
 
                     if (angleBetween < this.minAngle) {
                         this.data[nextAlongSegment.index].angle = normaliseAngle(this.data[currentSegment.index].angle - this.minAngle);
@@ -322,7 +338,7 @@
     /*
      * Returns visible segments
      */
-    DraggablePiechart.prototype.getVisibleSegments = function() {
+    DraggablePiechart.prototype.getVisibleSegments = function () {
 
         var piechart = this;
         // Collect data for visible segments
@@ -339,7 +355,9 @@
 
                     if (!piechart.data[nextAngleIndex].collapsed) {
                         var arcSize = piechart.data[nextAngleIndex].angle - startingAngle;
-                        if (arcSize <= 0) { arcSize += TAU; }
+                        if (arcSize <= 0) {
+                            arcSize += TAU;
+                        }
 
                         visibleSegments.push({
                             arcSize: arcSize,
@@ -372,7 +390,7 @@
     /*
      * Returns invisible segments
      */
-    DraggablePiechart.prototype.getInvisibleSegments = function() {
+    DraggablePiechart.prototype.getInvisibleSegments = function () {
         var piechart = this;
         // Collect data for visible segments
         var invisibleSegments = [];
@@ -444,7 +462,9 @@
      */
     DraggablePiechart.prototype.shiftSelectedAngle = function (newAngle) {
         var piechart = this;
-        if (!piechart.draggedPie) { return; }
+        if (!piechart.draggedPie) {
+            return;
+        }
         var draggedPie = piechart.draggedPie;
 
 
@@ -552,20 +572,23 @@
 
     DraggablePiechart.prototype.defaults = {
 
-        onchange: function(piechart) {},
+        onchange: function (piechart) {
+        },
         radius: 0.9,
-            data: [
-        { angle: -2, format: { color: "#2665da", label: 'Walking'}, collapsed: false },
-        { angle: -1, format: { color: "#6dd020", label: 'Programming'}, collapsed: false },
-        { angle: 0, format: { color: "#f9df18", label: 'Chess'}, collapsed: false },
-        { angle: 1, format: { color: "#d42a00", label: 'Eating'}, collapsed: false },
-        { angle: 2, format: { color: "#e96400", label: 'Sleeping'}, collapsed: false }],
+        data: [
+            {angle: -2, format: {color: "#2665da", label: 'Walking'}, collapsed: false},
+            {angle: -1, format: {color: "#6dd020", label: 'Programming'}, collapsed: false},
+            {angle: 0, format: {color: "#f9df18", label: 'Chess'}, collapsed: false},
+            {angle: 1, format: {color: "#d42a00", label: 'Eating'}, collapsed: false},
+            {angle: 2, format: {color: "#e96400", label: 'Sleeping'}, collapsed: false}],
         collapsing: false,
         minAngle: 0.1,
 
-        drawSegment: function(context, piechart, centerX, centerY, radius, startingAngle, arcSize, format, collapsed) {
+        drawSegment: function (context, piechart, centerX, centerY, radius, startingAngle, arcSize, format, collapsed) {
 
-            if (collapsed) { return; }
+            if (collapsed) {
+                return;
+            }
 
             // Draw coloured segment
             context.save();
@@ -619,20 +642,15 @@
     var TAU = Math.PI * 2;
 
     function degreesToRadians(degrees) {
-        return (degrees * Math.PI)/180;
+        return (degrees * Math.PI) / 180;
     }
 
     function smallestSignedAngleBetween(target, source) {
-        return Math.atan2(Math.sin(target-source), Math.cos(target-source));
+        return Math.atan2(Math.sin(target - source), Math.cos(target - source));
     }
 
     function mod(n, m) {
         return ((n % m) + m) % m;
-    }
-
-    function is_touch_device() {
-        return 'ontouchstart' in window        // works on most browsers
-            || navigator.maxTouchPoints;       // works on IE10/11 and Surface
     }
 
     function normaliseAngle(angle) {
@@ -645,6 +663,6 @@
             y: radius * Math.sin(angle)
         }
     }
-    
+
 })();
 
