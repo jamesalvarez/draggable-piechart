@@ -667,3 +667,4 @@
 
 })();
 
+export default DraggablePiechart;
