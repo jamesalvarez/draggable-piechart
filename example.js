@@ -58,15 +58,30 @@
 
             // Draw label on top
             context.save();
-            context.translate(centerX, centerY);
-            context.rotate(startingAngle);
+
 
             var fontSize = Math.floor(context.canvas.height / 25);
-            var dx = radius - fontSize;
-            var dy = centerY / 10;
-
-            context.textAlign = "right";
+            var dx;
+            var dy;
             context.font = fontSize + "pt Helvetica";
+
+            const absVal = Math.abs(startingAngle) * 2;
+
+            if (absVal > Math.PI) {
+                dx = 0 - (radius - fontSize);
+                dy = 5 - fontSize ;
+                context.translate(centerX, centerY);
+                context.rotate(Math.PI + startingAngle);
+                context.textAlign = "left";
+                console.log(format.label, "left", dx, dy, startingAngle, centerX, centerY);
+            } else {
+                dx = radius - fontSize;
+                dy = fontSize + 5;
+                context.translate(centerX, centerY);
+                context.rotate(startingAngle);
+                context.textAlign = "right";
+            }
+
             context.fillText(format.label, dx, dy);
             context.restore();
         }
