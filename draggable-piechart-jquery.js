@@ -103,13 +103,13 @@
 
             if (evt.clientX) {
                 return {
-                    x: evt.clientX - rect.left,
-                    y: evt.clientY - rect.top
+                    x: (evt.clientX - rect.left) * 2,
+                    y: (evt.clientY - rect.top) * 2
                 }
             } else {
                 return {
-                    x: evt.originalEvent.targetTouches[0].clientX - rect.left,
-                    y: evt.originalEvent.targetTouches[0].clientY - rect.top
+                    x: (evt.originalEvent.targetTouches[0].clientX - rect.left) * 2,
+                    y: (evt.originalEvent.targetTouches[0].clientY - rect.top) * 2
                 }
             }
         }
@@ -608,7 +608,8 @@
             context.translate(centerX, centerY);
             context.fillStyle = '#DDDDDD';
 
-            var rad = hover ? 7 : 5;
+            var rad = hover ? 25 : 15;
+            context.lineWidth = 2;
             context.beginPath();
             context.arc(x, y, rad, 0, TAU, true);
             context.fill();
